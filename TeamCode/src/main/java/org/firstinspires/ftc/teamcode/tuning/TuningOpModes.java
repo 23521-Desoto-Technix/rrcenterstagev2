@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.TankDrive;
+import org.firstinspires.ftc.teamcode.TankDriveTeleop;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
 
@@ -33,7 +34,7 @@ import java.util.List;
 
 public final class TuningOpModes {
     // TODO: change this to TankDrive.class if you're using tank
-    public static final Class<?> DRIVE_CLASS = TankDrive.class;
+    public static final Class<?> DRIVE_CLASS = TankDriveTeleop.class;
 
     public static final String GROUP = "quickstart";
     public static final boolean DISABLED = true;
@@ -104,7 +105,7 @@ public final class TuningOpModes {
                                 MecanumDrive.PARAMS.kA / MecanumDrive.PARAMS.inPerTick)
                 );
             };
-        } else if (DRIVE_CLASS.equals(TankDrive.class)) {
+        } else if (DRIVE_CLASS.equals(TankDriveTeleop.class)) {
             dvf = hardwareMap -> {
                 TankDrive td = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
 

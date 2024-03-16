@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
@@ -18,16 +17,12 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Size;
-import org.firstinspires.ftc.teamcode.FirstPipelineRevised;
-import org.firstinspires.ftc.vision.VisionPortal;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.dashboard.FtcDashboard;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import java.util.concurrent.atomic.AtomicReference;
@@ -101,7 +96,11 @@ public class Red extends LinearOpMode {
         while (opModeInInit()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
             telemetry.addData("Yellow? ", do_yellow);
-            telemetry.addData("Park? ", park);
+            if (park) {
+                telemetry.addLine("Park: left");
+            } else {
+                telemetry.addLine("Park: right");
+            }
             telemetry.update();
             if (gamepad1.dpad_right) {
                 do_yellow = true;
@@ -143,16 +142,43 @@ public class Red extends LinearOpMode {
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(50, -50), Math.toRadians(-90))
+                                    .splineTo(new Vector2d(51, -32.5), Math.toRadians(-90))
+                                    .splineTo(new Vector2d(51, -50), Math.toRadians(-90))
                                     .build());
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(7.5, -32.5), Math.toRadians(-90))
+                                    .splineTo(new Vector2d(7.5, -50), Math.toRadians(-90))
+                                    .build());
+                }
+            } else if (selection == 2) {
+                Actions.runBlocking(
+                        drive.actionBuilder(beginPose)
+                                .splineTo(new Vector2d(30, 0), Math.toRadians(0))
+                                .lineToX(25)
+                                .turnTo(Math.toRadians(-90))
+                                .build());
+                Actions.runBlocking(
+                        drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(30.2, -32.5), Math.toRadians(-90))
+                                .turnTo(Math.toRadians(90))
+                                .build());
+                bomb();
+                if (park) {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(51, -32.5), Math.toRadians(-90))
+                                    .splineTo(new Vector2d(51, -50), Math.toRadians(-90))
+                                    .build());
+                } else {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(7.5, -32.5), Math.toRadians(-90))
                                     .splineTo(new Vector2d(7.5, -50), Math.toRadians(-90))
                                     .build());
                 }
             }
-
             stop();
         }
 
@@ -169,6 +195,10 @@ public class Red extends LinearOpMode {
         sleep(200);
         leftArm.setTargetPosition(100);
         rightArm.setTargetPosition(100);
-        sleep(700);
+        sleep(1700);
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftArm.setPower(0);
+        rightArm.setPower(0);
     }
 }

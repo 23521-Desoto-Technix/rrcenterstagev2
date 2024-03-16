@@ -257,12 +257,20 @@ public final class TankDrive {
         for (DualNum<Time> power : wheelVels.all()) {
             maxPowerMag = Math.max(maxPowerMag, power.value());
         }
-
-        for (DcMotorEx m : leftMotors) {
-            m.setPower(wheelVels.left.get(0) / maxPowerMag);
-        }
-        for (DcMotorEx m : rightMotors) {
-            m.setPower(wheelVels.right.get(0) / maxPowerMag);
+        if ((wheelVels.left.get(0) + wheelVels.right.get(0)) < 0) {
+            for (DcMotorEx m : leftMotors) {
+                m.setPower(wheelVels.right.get(0) / maxPowerMag);
+            }
+            for (DcMotorEx m : rightMotors) {
+                m.setPower(wheelVels.left.get(0) / maxPowerMag);
+            }
+        } else {
+            for (DcMotorEx m : leftMotors) {
+                m.setPower(wheelVels.left.get(0) / maxPowerMag);
+            }
+            for (DcMotorEx m : rightMotors) {
+                m.setPower(wheelVels.right.get(0) / maxPowerMag);
+            }
         }
     }
 

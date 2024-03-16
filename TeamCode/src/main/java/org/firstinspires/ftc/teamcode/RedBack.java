@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
@@ -18,16 +17,12 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Size;
-import org.firstinspires.ftc.teamcode.FirstPipelineRevised;
-import org.firstinspires.ftc.vision.VisionPortal;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.dashboard.FtcDashboard;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import java.util.concurrent.atomic.AtomicReference;
