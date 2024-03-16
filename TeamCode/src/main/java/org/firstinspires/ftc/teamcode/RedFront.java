@@ -35,6 +35,7 @@ public class RedFront extends LinearOpMode {
     IMU imu;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
+    private Servo wrist = null;
 
     public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
         private final AtomicReference<Bitmap> lastFrame =
@@ -72,6 +73,7 @@ public class RedFront extends LinearOpMode {
         firstPipelineRevised = new FirstPipelineRevised();
         leftArm = hardwareMap.get(DcMotor.class, "left_arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_arm");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
@@ -93,6 +95,7 @@ public class RedFront extends LinearOpMode {
         boolean do_yellow = true;
         boolean park = true;
         claw.setPosition(0.7);
+        wrist.setPosition(1);
         while (opModeInInit()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
             telemetry.addData("Yellow? ", do_yellow);
@@ -126,20 +129,22 @@ public class RedFront extends LinearOpMode {
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, 5.5), Math.toRadians(45))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(12.5, 0), Math.toRadians(180))
                                 .build());
+                wrist.setPosition(0.5);
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .lineToY(0)
-                                .turn(Math.toRadians(135))
+                                .splineTo(new Vector2d(4,0), Math.toRadians(-90))
+                                .splineTo(new Vector2d(7,-60), Math.toRadians(-90))
+                                .splineTo(new Vector2d(39,-81.5), Math.toRadians(-90))
                                 .build());
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
-                                .setReversed(false)
-                                .splineTo(new Vector2d(2,0), Math.toRadians(180))
-                                .turnTo(Math.toRadians(-90))
-                                .splineTo(new Vector2d(2,-50), Math.toRadians(-90))
+                                .turnTo(Math.toRadians(87))
                                 .build());
+                bomb();
                 /*bomb();
                 if (park) {
                     Actions.runBlocking(
@@ -158,15 +163,19 @@ public class RedFront extends LinearOpMode {
                 Actions.runBlocking(
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(30, 0), Math.toRadians(0))
-                                .lineToX(25)
-                                .turnTo(Math.toRadians(-90))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(20, 0), Math.toRadians(180))
                                 .build());
+                wrist.setPosition(0.5);
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(29, -33.5), Math.toRadians(-90))
-                                .turnTo(Math.toRadians(90))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(4,0), Math.toRadians(-90))
+                                .splineTo(new Vector2d(4,-60), Math.toRadians(-90))
+                                .splineTo(new Vector2d(28,-82), Math.toRadians(-90))
                                 .build());
-                /*bomb();
+
+                bomb();/*
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -185,24 +194,19 @@ public class RedFront extends LinearOpMode {
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, -5.5), Math.toRadians(-45))
-
+                                .setReversed(true)
+                                .splineTo(new Vector2d(12.5, 0), Math.toRadians(180))
                                 .build());
+                wrist.setPosition(0.5);
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .lineToY(0)
-                                .turn(Math.toRadians(-45))
+                                .splineTo(new Vector2d(4,0), Math.toRadians(-90))
+                                .splineTo(new Vector2d(3,-60), Math.toRadians(-90))
+                                .splineTo(new Vector2d(24,-82), Math.toRadians(-90))
                                 .build());
-                Actions.runBlocking(
-                        drive.actionBuilder(drive.pose)
-                                .setReversed(false)
-                                .splineTo(new Vector2d(21, -34.5), Math.toRadians(-90))
-                                .turnTo(Math.toRadians(90))
-                                .build());
-                Actions.runBlocking(
-                        drive.actionBuilder(drive.pose)
-                                .turnTo(Math.toRadians(90))
-                                .build());
+                bomb();
+
                 /*bomb();
                 if (park) {
                     Actions.runBlocking(
@@ -223,15 +227,15 @@ public class RedFront extends LinearOpMode {
 
     }
     public void bomb() {
-        leftArm.setTargetPosition(500);
-        rightArm.setTargetPosition(500);
-        leftArm.setPower(0.75);
-        rightArm.setPower(0.75);
-        while (leftArm.getCurrentPosition() < 500) {
+        wrist.setPosition(1);
+        leftArm.setTargetPosition(505);
+        rightArm.setTargetPosition(505);
+        leftArm.setPower(0.5);
+        rightArm.setPower(0.5);
+        while (leftArm.getCurrentPosition() < 505) {
         }
-        sleep(200);
-        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArm.setPower(0);
         rightArm.setPower(0);
         sleep(200);

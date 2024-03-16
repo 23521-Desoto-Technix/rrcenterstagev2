@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -32,16 +33,25 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous(name="Red Backstage")
-public class Red extends LinearOpMode {
+@Autonomous(name="Blue Backstage")
+public class Blue extends LinearOpMode {
     private FirstPipelineRevised firstPipelineRevised; //Create an object of the VisionProcessor Class
-    private VisionPortal portal;
     private Servo claw = null;
     IMU imu;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
+    VisionPortal.Builder myVisionPortalBuilder;
+    int Portal_1_View_ID;
+    int Portal_2_View_ID;
+    VisionPortal myVisionPortal_1;
+    VisionPortal myVisionPortal_2;
+    AprilTagProcessor myAprilTagProcessor_2;
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+    private VisionPortal portal;
 
     public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
         private final AtomicReference<Bitmap> lastFrame =
@@ -72,7 +82,6 @@ public class Red extends LinearOpMode {
             continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
         }
     }
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -86,13 +95,14 @@ public class Red extends LinearOpMode {
         rightArm.setTargetPosition(0);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(firstPipelineRevised)
                 .addProcessor(processor)
                 .setCameraResolution(new Size(1280, 720))
                 .build();
-
         FtcDashboard.getInstance().startCameraStream(processor, 0);
         claw = hardwareMap.get(Servo.class, "claw");
         Pose2d beginPose = new Pose2d(0, 0, 0);
@@ -134,22 +144,22 @@ public class Red extends LinearOpMode {
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, 5.5), Math.toRadians(45))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(34.5, -33.5), Math.toRadians(-90))
+                                .splineTo(new Vector2d(18, 36), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(51, -30), Math.toRadians(90))
+                                    .splineTo(new Vector2d(51, 30), Math.toRadians(-80))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToY(50)
                                     .build());
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0.5, -35), Math.toRadians(90))
+                                    .splineTo(new Vector2d(0, 25), Math.toRadians(-90))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToY(50)
                                     .build());
                 }
             } else if (selection == 2) {
@@ -157,22 +167,22 @@ public class Red extends LinearOpMode {
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(30, 0), Math.toRadians(0))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(29, -34.5), Math.toRadians(-90))
+                                .splineTo(new Vector2d(25, 35.5), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(51, -30), Math.toRadians(90))
+                                    .splineTo(new Vector2d(51, 30), Math.toRadians(-80))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToY(50)
                                     .build());
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0.5, -35), Math.toRadians(90))
+                                    .splineTo(new Vector2d(0, 25), Math.toRadians(-90))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToY(50)
                                     .build());
                 }
             } else if (selection == 3) {
@@ -181,22 +191,23 @@ public class Red extends LinearOpMode {
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, -5.5), Math.toRadians(-45))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(18, -34.5), Math.toRadians(-90))
+                                .splineTo(new Vector2d(28.5, 30.5), Math.toRadians(90))
+                                .splineTo(new Vector2d(28.5, 35.5), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(51, -30), Math.toRadians(90))
+                                    .splineTo(new Vector2d(51, 30), Math.toRadians(-80))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToY(50)
                                     .build());
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0.5, -35), Math.toRadians(90))
+                                    .splineTo(new Vector2d(0, 25), Math.toRadians(-90))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToY(50)
                                     .build());
                 }
             }
@@ -204,7 +215,6 @@ public class Red extends LinearOpMode {
         }
 
     }
-
     public void bomb() {
         leftArm.setTargetPosition(500);
         rightArm.setTargetPosition(500);
