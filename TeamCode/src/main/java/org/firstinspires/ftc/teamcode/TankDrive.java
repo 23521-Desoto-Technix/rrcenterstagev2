@@ -80,8 +80,8 @@ public final class TankDrive {
 
         // path profile parameters (in inches)
         public double maxWheelVel = 40;
-        public double minProfileAccel = -20;
-        public double maxProfileAccel = 20;
+        public double minProfileAccel = -30;
+        public double maxProfileAccel = 30;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI/2; // shared with path
@@ -92,7 +92,7 @@ public final class TankDrive {
         public double ramseteBBar = 100; // positive
 
         // turn controller gains
-        public double turnGain = -6;
+        public double turnGain = -6.3;
         public double turnVelGain = 0.0;
     }
 

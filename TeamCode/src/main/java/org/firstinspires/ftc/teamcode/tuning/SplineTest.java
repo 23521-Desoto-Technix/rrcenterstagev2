@@ -31,7 +31,7 @@ public final class SplineTest extends LinearOpMode {
 
             Actions.runBlocking(
                     drive.actionBuilder(beginPose)
-                            .turn(Math.toRadians(45))
+                            .turn(Math.toRadians(180))
                             .build());
         } else {
             throw new RuntimeException();

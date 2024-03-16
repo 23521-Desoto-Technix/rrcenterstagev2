@@ -27,8 +27,8 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous(name="Red Backstage")
-public class Red extends LinearOpMode {
+@Autonomous(name="Red Frontstage")
+public class RedFront extends LinearOpMode {
     private FirstPipelineRevised firstPipelineRevised; //Create an object of the VisionProcessor Class
     private VisionPortal portal;
     private Servo claw = null;
@@ -131,14 +131,16 @@ public class Red extends LinearOpMode {
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
                                 .lineToY(0)
-                                .turn(Math.toRadians(-135))
-                        .build());
+                                .turn(Math.toRadians(135))
+                                .build());
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(36.2, -32.5), Math.toRadians(-90))
-                                .turn(Math.toRadians(180))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(2,0), Math.toRadians(180))
+                                .turnTo(Math.toRadians(-90))
+                                .splineTo(new Vector2d(2,-50), Math.toRadians(-90))
                                 .build());
-                bomb();
+                /*bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -151,7 +153,7 @@ public class Red extends LinearOpMode {
                                     .splineTo(new Vector2d(3.5, -30), Math.toRadians(-90))
                                     .splineTo(new Vector2d(3.5, -50), Math.toRadians(-90))
                                     .build());
-                }
+                }*/
             } else if (selection == 2) {
                 Actions.runBlocking(
                         drive.actionBuilder(beginPose)
@@ -164,7 +166,7 @@ public class Red extends LinearOpMode {
                                 .splineTo(new Vector2d(29, -33.5), Math.toRadians(-90))
                                 .turnTo(Math.toRadians(90))
                                 .build());
-                bomb();
+                /*bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -177,7 +179,7 @@ public class Red extends LinearOpMode {
                                     .splineTo(new Vector2d(3.5, -30), Math.toRadians(-90))
                                     .splineTo(new Vector2d(3.5, -50), Math.toRadians(-90))
                                     .build());
-                }
+                }*/
             } else if (selection == 3) {
                 Actions.runBlocking(
                         drive.actionBuilder(beginPose)
@@ -201,7 +203,7 @@ public class Red extends LinearOpMode {
                         drive.actionBuilder(drive.pose)
                                 .turnTo(Math.toRadians(90))
                                 .build());
-                bomb();
+                /*bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -214,7 +216,7 @@ public class Red extends LinearOpMode {
                                     .splineTo(new Vector2d(3.5, -30), Math.toRadians(-90))
                                     .splineTo(new Vector2d(3.5, -50), Math.toRadians(-90))
                                     .build());
-                }
+                }*/
             }
             stop();
         }
