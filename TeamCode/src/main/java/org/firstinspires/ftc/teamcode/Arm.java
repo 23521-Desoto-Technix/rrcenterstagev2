@@ -44,11 +44,11 @@ public class Arm extends OpMode {
     private PIDController controller;
 
     public static double p = 0, i = 0, d = 0;
-    public static double f = 0;
+    public static double f = 0.005;
 
     public static int target = 0;
 
-    private final double ticks_in_degree =  288.0 / 180.0;
+    private final double ticks_in_degree =  288.0 / 360.0;
 
     private DcMotorEx arm_motor_left;
     private DcMotorEx arm_motor_right;
