@@ -72,14 +72,14 @@ public class Arm extends OpMode {
         controller.setPID(p, i, d);
         int armPos = (arm_motor_left.getCurrentPosition() + arm_motor_right.getCurrentPosition()) / 2;
         double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+        double ff = Math.cos((double) armPos / 285 * Math.PI) * f;
         double power = pid + ff;
 
         arm_motor_right.setPower(power);
         arm_motor_left.setPower(power);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
-        telemetry.addData("ff", Math.cos(Math.toRadians(armPos / ticks_in_degree)));
+        telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI));
         telemetry.update();
     }
 }
