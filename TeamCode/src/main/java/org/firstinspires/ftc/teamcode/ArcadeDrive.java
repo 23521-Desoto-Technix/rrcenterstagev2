@@ -241,7 +241,7 @@ public class ArcadeDrive extends OpMode
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-            speedmultiplier = 0.1;
+            speedmultiplier = 0.4;
         } else {
             speedmultiplier = 0.75;
         }
