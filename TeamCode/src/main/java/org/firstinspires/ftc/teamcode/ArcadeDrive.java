@@ -300,14 +300,14 @@ public class ArcadeDrive extends OpMode
         }
         target += (int) (armPower * 10);
         rightArm.setPower(power * 0.85);
-        leftArm.setPower(power * 0.85);
+        leftArm.setPower(power * 0.75);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
         telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI / 2));
         telemetry.addData("target", target);
 
         launcher.setPosition(buttonPressToPower(launchButton));
-
+        controller.setPID(p, i, d);
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
