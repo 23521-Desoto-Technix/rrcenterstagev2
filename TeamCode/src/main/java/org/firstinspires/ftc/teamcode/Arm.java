@@ -48,7 +48,7 @@ public class Arm extends OpMode {
 
     public static int target = 0;
 
-    private final double ticks_in_degree =  288.0 / 360.0;
+    private final double ticks_in_degree =  ((288.0 / 360.0) * 0.24);
 
     private DcMotorEx arm_motor_left;
     private DcMotorEx arm_motor_right;
