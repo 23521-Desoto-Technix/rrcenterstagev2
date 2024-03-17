@@ -34,6 +34,7 @@ import android.graphics.Canvas;
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -77,7 +78,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 @TeleOp(name="Arcade Drive", group="Iterative Opmode")
-
+@Config
 public class ArcadeDrive extends OpMode
 {
     // Declare OpMode members.
@@ -95,7 +96,7 @@ public class ArcadeDrive extends OpMode
     private PIDController controller;
     private boolean armPaused = false;
 
-    public static double p = 0.1, i = 0, d = 0.0001;
+    public static double p = 0.001, i = 0, d = 0.0001;
     public static double f = 0.1;
 
     public static int target = 0;
