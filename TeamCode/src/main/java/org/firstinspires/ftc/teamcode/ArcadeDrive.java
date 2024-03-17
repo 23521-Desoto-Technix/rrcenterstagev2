@@ -98,7 +98,7 @@ public class ArcadeDrive extends OpMode
 
     public static double p = 0.001, i = 0, d = 0.0001;
     public static double f = 0.1;
-
+    public double speedmultiplier = 0.75;
     public static int target = 0;
 
     public double buttonPressToPower (boolean buttonPress) {
@@ -268,7 +268,11 @@ public class ArcadeDrive extends OpMode
                     claw.setPosition(0);
                 }
             }
-        }/*
+        }
+        if (gamepad2.right_trigger > 0.5) {
+            speedmultiplier = 0.5;
+        }
+        /*
         if (armPower == 0){
             leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -300,7 +304,7 @@ public class ArcadeDrive extends OpMode
         }
         target += (int) (armPower * 10);
         rightArm.setPower(power * 0.85);
-        leftArm.setPower(power * 0.75);
+        leftArm.setPower(power * speedmultiplier);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
         telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI / 2));
