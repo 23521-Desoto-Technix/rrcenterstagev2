@@ -68,7 +68,7 @@ public class Arm extends OpMode {
         controller.setPID(p, i, d);
         int armPos = (arm_motor_left.getCurrentPosition() + arm_motor_right.getCurrentPosition()) / 2;
         double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(f*Math.toRadians(target / ticks_in_degree));
+        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
         double power = pid + ff;
 
         arm_motor_right.setPower(power);
