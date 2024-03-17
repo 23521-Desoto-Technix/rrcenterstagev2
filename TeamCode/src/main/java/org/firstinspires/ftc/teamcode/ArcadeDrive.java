@@ -34,6 +34,8 @@ import android.graphics.Canvas;
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -90,6 +92,12 @@ public class ArcadeDrive extends OpMode
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
     private double armPosition = 0;
+    private PIDController controller;
+
+    public static double p = 0.008, i = 0, d = 0.0001;
+    public static double f = 0.1;
+
+    public static int target = 0;
 
     public double buttonPressToPower (boolean buttonPress) {
         double buttonPower = 0.0;
@@ -145,12 +153,16 @@ public class ArcadeDrive extends OpMode
         wrist = hardwareMap.get(Servo.class, "wrist");
         claw = hardwareMap.get(Servo.class, "claw");
         launcher = hardwareMap.get(Servo.class, "launcher");
+        controller = new PIDController(p, i, d);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -254,7 +266,7 @@ public class ArcadeDrive extends OpMode
                     claw.setPosition(0);
                 }
             }
-        }
+        }/*
         if (armPower == 0){
             leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -265,7 +277,7 @@ public class ArcadeDrive extends OpMode
             rightArm.setPower(armPower);
             leftArm.setTargetPosition(leftArm.getCurrentPosition());
             rightArm.setTargetPosition(rightArm.getCurrentPosition());
-        }/*
+        }
         armPosition += armPower * 1;
         telemetry.addData("Arm Position", armPosition);
         leftArm.setTargetPosition((int) armPosition);
@@ -274,6 +286,17 @@ public class ArcadeDrive extends OpMode
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftArm.setPower(1);
         rightArm.setPower(1);*/
+        int armPos = (leftArm.getCurrentPosition() + rightArm.getCurrentPosition()) / 2;
+        double pid = controller.calculate(armPos, target);
+        double ff = Math.cos((double) armPos / 285 * Math.PI / 2) * f;
+        double power = pid + ff;
+        target += armPower * 25;
+        rightArm.setPower(power * 0.85);
+        leftArm.setPower(power * 0.85);
+        telemetry.addData("armPos", armPos);
+        telemetry.addData("power", power);
+        telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI / 2));
+        telemetry.addData("target", target);
 
         launcher.setPosition(buttonPressToPower(launchButton));
 
