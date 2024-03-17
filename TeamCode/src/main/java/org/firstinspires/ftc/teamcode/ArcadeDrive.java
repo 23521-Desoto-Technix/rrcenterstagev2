@@ -96,7 +96,7 @@ public class ArcadeDrive extends OpMode
     private PIDController controller;
     private boolean armPaused = false;
 
-    public static double p = 0.001, i = 0, d = 0.0001;
+    public static double p = 0.01, i = 0, d = 0.0001;
     public static double f = 0.1;
     public double speedmultiplier = 0.75;
     public static int target = 0;
@@ -270,7 +270,9 @@ public class ArcadeDrive extends OpMode
             }
         }
         if (gamepad2.right_trigger > 0.5) {
-            speedmultiplier = 0.5;
+            speedmultiplier = 0.1;
+        } else {
+            speedmultiplier = 0.75;
         }
         /*
         if (armPower == 0){
