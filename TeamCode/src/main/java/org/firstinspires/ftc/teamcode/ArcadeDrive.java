@@ -278,7 +278,7 @@ public class ArcadeDrive extends OpMode
             armPaused = false;
         }
         target += (int) (armPower * 10);
-        rightArm.setPower(power * 0.85);
+        rightArm.setPower(power * speedmultiplier);
         leftArm.setPower(power * speedmultiplier);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
