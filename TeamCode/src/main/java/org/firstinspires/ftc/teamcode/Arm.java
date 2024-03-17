@@ -75,8 +75,8 @@ public class Arm extends OpMode {
         double ff = Math.cos((double) armPos / 285 * Math.PI / 2) * f;
         double power = pid + ff;
 
-        arm_motor_right.setPower(power);
-        arm_motor_left.setPower(power);
+        arm_motor_right.setPower(power * 0.85);
+        arm_motor_left.setPower(power * 0.85);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
         telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI / 2));
