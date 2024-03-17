@@ -62,6 +62,10 @@ public class Arm extends OpMode {
         arm_motor_right = hardwareMap.get(DcMotorEx.class, "right_arm");
         arm_motor_left.setDirection(DcMotorEx.Direction.REVERSE);
         arm_motor_right.setDirection(DcMotorEx.Direction.FORWARD);
+        arm_motor_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm_motor_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm_motor_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm_motor_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     @Override
     public void loop() {
@@ -75,7 +79,7 @@ public class Arm extends OpMode {
         arm_motor_left.setPower(power);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
-        telemetry.addData("ff", ff);
+        telemetry.addData("ff", Math.cos(Math.toRadians(target / ticks_in_degree)));
         telemetry.update();
     }
 }
