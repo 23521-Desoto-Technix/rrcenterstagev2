@@ -79,7 +79,7 @@ public class Arm extends OpMode {
         arm_motor_left.setPower(power);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
-        telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI));
+        telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI / 2));
         telemetry.update();
     }
 }
