@@ -94,7 +94,7 @@ public class ArcadeDrive extends OpMode
     private double armPosition = 0;
     private PIDController controller;
 
-    public static double p = 0.008, i = 0, d = 0.0001;
+    public static double p = 0.1, i = 0, d = 0.0001;
     public static double f = 0.1;
 
     public static int target = 0;
@@ -290,7 +290,7 @@ public class ArcadeDrive extends OpMode
         double pid = controller.calculate(armPos, target);
         double ff = Math.cos((double) armPos / 285 * Math.PI / 2) * f;
         double power = pid + ff;
-        target += armPower * 25;
+        target += (int) (armPower * 25);
         rightArm.setPower(power * 0.85);
         leftArm.setPower(power * 0.85);
         telemetry.addData("armPos", armPos);
