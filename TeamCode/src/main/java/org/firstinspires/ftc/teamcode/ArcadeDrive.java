@@ -141,7 +141,7 @@ public class ArcadeDrive extends OpMode
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArm.setDirection(DcMotor.Direction.REVERSE);
-        rightArm.setDirection(DcMotor.Direction.FORWARD);
+        rightArm.setDirection(DcMotor.Direction.REVERSE);
         wrist.setDirection(Servo.Direction.FORWARD);
         wrist.setPosition(270);
         claw.setDirection(Servo.Direction.FORWARD);
