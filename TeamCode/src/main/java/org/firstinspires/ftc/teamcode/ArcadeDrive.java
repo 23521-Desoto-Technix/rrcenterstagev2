@@ -282,8 +282,8 @@ public class ArcadeDrive extends OpMode
             rightArm.setPower(-1);
             leftArm.setPower(-1);
         } else {
-            rightArm.setPower((armPower * speedmultiplier) + ff);
-            leftArm.setPower((armPower * speedmultiplier) + ff);
+            rightArm.setPower((armPower) + ff);
+            leftArm.setPower((armPower) + ff);
         }
         telemetry.addData("leftTrigger", gamepad2.left_trigger);
         telemetry.addData("armPos", armPos);
