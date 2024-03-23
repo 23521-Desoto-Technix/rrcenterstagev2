@@ -223,22 +223,10 @@ public class ArcadeDrive extends OpMode
         }
         if (wristDown) {
             wrist.setPosition(0);
-            if (y == 0) {
-                if (!wristDown) {
-                    wrist.setPosition(0);
-                } else if (wristUp) {
-                    claw.setPosition(180);
-                }
-            }
         } else if (wristUp) {
-            wrist.setPosition(180);
-            if (y >= 180) {
-                if (!wristUp) {
-                    claw.setPosition(180);
-                } else if (wristDown) {
-                    claw.setPosition(0);
-                }
-            }
+            wrist.setPosition(1);
+        } else if (gamepad2.y) {
+            wrist.setPosition(0.5);
         }
         if (gamepad2.right_trigger > 0.5) {
             speedmultiplier = 0.4;
