@@ -278,7 +278,7 @@ public class ArcadeDrive extends OpMode
         telemetry.addData("leftTrigger", gamepad2.left_trigger);
         telemetry.addData("armPos", armPos);
         telemetry.addData("power", power);
-        telemetry.addData("ff", Math.cos((double) armPos / 285 * Math.PI / 2));
+        telemetry.addData("ff", Math.cos((double) armPos / 420 * Math.PI));
         telemetry.addData("target", target);
 
         launcher.setPosition(buttonPressToPower(launchButton));
