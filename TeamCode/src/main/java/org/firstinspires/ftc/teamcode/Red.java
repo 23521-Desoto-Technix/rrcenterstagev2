@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -80,7 +81,7 @@ public class Red extends LinearOpMode {
         firstPipelineRevised = new FirstPipelineRevised();
         leftArm = hardwareMap.get(DcMotor.class, "left_arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_arm");
-        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
         rightArm.setTargetPosition(0);
@@ -206,8 +207,8 @@ public class Red extends LinearOpMode {
     }
 
     public void bomb() {
-        leftArm.setTargetPosition(500);
-        rightArm.setTargetPosition(500);
+        leftArm.setTargetPosition(2343);
+        rightArm.setTargetPosition(2343);
         leftArm.setPower(0.75);
         rightArm.setPower(0.75);
         while ((leftArm.getCurrentPosition() < 500) && !isStopRequested()) {
