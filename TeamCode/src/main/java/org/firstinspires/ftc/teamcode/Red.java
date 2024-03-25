@@ -209,9 +209,9 @@ public class Red extends LinearOpMode {
     public void bomb() {
         leftArm.setTargetPosition(2343);
         rightArm.setTargetPosition(2343);
-        leftArm.setPower(0.75);
-        rightArm.setPower(0.75);
-        while ((leftArm.getCurrentPosition() < 500) && !isStopRequested()) {
+        leftArm.setPower(1);
+        rightArm.setPower(1);
+        while ((leftArm.getCurrentPosition() < 2343) && !isStopRequested()) {
         }
         sleep(200);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
