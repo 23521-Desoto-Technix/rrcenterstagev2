@@ -85,8 +85,8 @@ public class Red extends LinearOpMode {
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
         rightArm.setTargetPosition(0);
-        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(firstPipelineRevised)
@@ -207,10 +207,12 @@ public class Red extends LinearOpMode {
     }
 
     public void bomb() {
-        leftArm.setTargetPosition(2343);
-        rightArm.setTargetPosition(2343);
         leftArm.setPower(1);
         rightArm.setPower(1);
+        while ((leftArm.getCurrentPosition() < 1343) && !isStopRequested()) {
+        }
+        leftArm.setPower(0.5);
+        rightArm.setPower(0.5);
         while ((leftArm.getCurrentPosition() < 2343) && !isStopRequested()) {
         }
         sleep(200);
@@ -221,10 +223,8 @@ public class Red extends LinearOpMode {
         sleep(200);
         claw.setPosition(0.5);
         sleep(200);
-        leftArm.setTargetPosition(100);
-        rightArm.setTargetPosition(100);
-        leftArm.setPower(1);
-        rightArm.setPower(1);
+        leftArm.setPower(-1);
+        rightArm.setPower(-1);
         sleep(1200);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
