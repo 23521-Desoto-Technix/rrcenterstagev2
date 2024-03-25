@@ -209,11 +209,11 @@ public class Red extends LinearOpMode {
     public void bomb() {
         leftArm.setPower(1);
         rightArm.setPower(1);
-        while ((leftArm.getCurrentPosition() < 1343) && !isStopRequested()) {
+        while ((leftArm.getCurrentPosition() < 1100) && !isStopRequested()) {
         }
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);
-        while ((leftArm.getCurrentPosition() < 2343) && !isStopRequested()) {
+        while ((leftArm.getCurrentPosition() < 2100) && !isStopRequested()) {
         }
         sleep(200);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -225,7 +225,7 @@ public class Red extends LinearOpMode {
         sleep(200);
         leftArm.setPower(-1);
         rightArm.setPower(-1);
-        sleep(1200);
+        sleep(500);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftArm.setPower(0);

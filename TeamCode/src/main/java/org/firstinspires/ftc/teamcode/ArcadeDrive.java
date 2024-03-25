@@ -226,7 +226,7 @@ public class ArcadeDrive extends OpMode
         if (wristDown) {
             wrist.setPosition(0);
         } else if (wristUp) {
-            wrist.setPosition(1);
+            wrist.setPosition(0.9);
         } else if (gamepad2.y) {
             wrist.setPosition(0.5);
         }
