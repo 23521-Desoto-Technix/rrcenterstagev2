@@ -225,7 +225,7 @@ public class Red extends LinearOpMode {
         sleep(200);
         leftArm.setPower(-1);
         rightArm.setPower(-1);
-        sleep(500);
+        sleep(750);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftArm.setPower(0);
