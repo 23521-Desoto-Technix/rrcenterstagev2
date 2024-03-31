@@ -25,7 +25,6 @@ public class MeepMeepTesting {
                 .splineTo(new Vector2d(51, -35), Math.toRadians(90))
                 .setReversed(true)
                 .splineTo(new Vector2d(51, -40), Math.toRadians(90))
-                .lineToY(-50)
                 .build());
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
                 .setDarkMode(true)
