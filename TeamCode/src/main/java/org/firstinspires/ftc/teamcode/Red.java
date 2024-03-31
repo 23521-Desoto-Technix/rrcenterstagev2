@@ -85,6 +85,8 @@ public class Red extends LinearOpMode {
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
         rightArm.setTargetPosition(0);
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         portal = new VisionPortal.Builder()
@@ -148,9 +150,9 @@ public class Red extends LinearOpMode {
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0.5, -35), Math.toRadians(90))
+                                    .turn(Math.toRadians(-90))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToX(0)
                                     .build());
                 }
             } else if (selection == 2) {
@@ -158,7 +160,7 @@ public class Red extends LinearOpMode {
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(30, 0), Math.toRadians(0))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(29, -34.5), Math.toRadians(-90))
+                                .splineTo(new Vector2d(27, -34.5), Math.toRadians(-90))
                                 .build());
                 bomb();
                 if (park) {
@@ -171,9 +173,9 @@ public class Red extends LinearOpMode {
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0.5, -35), Math.toRadians(90))
+                                    .turn(Math.toRadians(-90))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToX(0)
                                     .build());
                 }
             } else if (selection == 3) {
@@ -195,9 +197,9 @@ public class Red extends LinearOpMode {
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0.5, -35), Math.toRadians(90))
+                                    .turn(Math.toRadians(-90))
                                     .setReversed(true)
-                                    .lineToY(-50)
+                                    .lineToX(0)
                                     .build());
                 }
             }

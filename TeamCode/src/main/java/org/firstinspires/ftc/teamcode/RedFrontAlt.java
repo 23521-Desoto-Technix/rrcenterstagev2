@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
@@ -29,9 +28,8 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous(name="Red Frontstage")
-@Disabled
-public class RedFront extends LinearOpMode {
+@Autonomous(name="Red Frontstage Alt")
+public class RedFrontAlt extends LinearOpMode {
     private FirstPipelineRevised firstPipelineRevised; //Create an object of the VisionProcessor Class
     private VisionPortal portal;
     private Servo claw = null;
@@ -76,6 +74,7 @@ public class RedFront extends LinearOpMode {
         firstPipelineRevised = new FirstPipelineRevised();
         leftArm = hardwareMap.get(DcMotor.class, "left_arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_arm");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
@@ -93,7 +92,6 @@ public class RedFront extends LinearOpMode {
 
         FtcDashboard.getInstance().startCameraStream(processor, 0);
         claw = hardwareMap.get(Servo.class, "claw");
-        wrist = hardwareMap.get(Servo.class, "wrist");
         Pose2d beginPose = new Pose2d(0, 0, 0);
         TankDrive drive = new TankDrive(hardwareMap, beginPose);
         ModernRoboticsI2cRangeSensor rangeSensor;
@@ -135,22 +133,28 @@ public class RedFront extends LinearOpMode {
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, 5.5), Math.toRadians(45))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(12.5, 0), Math.toRadians(180))
+                                .splineTo(new Vector2d(12.5, 0), Math.toRadians(-180))
                                 .build());
                 wrist.setPosition(0.5);
+                /*Actions.runBlocking(
+                        drive.actionBuilder(drive.pose)
+                                .setReversed(true)
+                                .splineTo(new Vector2d(4,0), Math.toRadians(90))
+                                .splineTo(new Vector2d(4,60), Math.toRadians(90))
+                                .splineTo(new Vector2d(21.5,83.5), Math.toRadians(90))
+                                .build());*/
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(-90))
-                                .splineTo(new Vector2d(7,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(38,-76), Math.toRadians(-90))
-                                .lineToY(-82)
+                                .splineTo(new Vector2d(8,-60), Math.toRadians(-90))
+                                .splineTo(new Vector2d(39,-83), Math.toRadians(-90))
                                 .build());
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(53, -80), Math.toRadians(90))
+                                    .splineTo(new Vector2d(55, -70), Math.toRadians(90))
                                     .setReversed(true)
                                     .lineToY(-100)
                                     .build());
@@ -159,16 +163,29 @@ public class RedFront extends LinearOpMode {
                             drive.actionBuilder(drive.pose)
                                     .turn(Math.toRadians(-90))
                                     .setReversed(true)
-                                    .splineTo(new Vector2d(7, -85.5), Math.toRadians(180))
-                                    .turn(Math.toRadians(90))
+                                    .lineToX(0)
                                     .build());
                 }
+                /*bomb();
+                if (park) {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .turn(Math.toRadians(-90))
+                                    .splineTo(new Vector2d(51, -50), Math.toRadians(-90))
+                                    .build());
+                } else {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(3.5, -30), Math.toRadians(-90))
+                                    .splineTo(new Vector2d(3.5, -50), Math.toRadians(-90))
+                                    .build());
+                }*/
             } else if (selection == 2) {
                 Actions.runBlocking(
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(30, 0), Math.toRadians(0))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(20, 0), Math.toRadians(180))
+                                .splineTo(new Vector2d(20, 0), Math.toRadians(-180))
                                 .build());
                 wrist.setPosition(0.5);
                 Actions.runBlocking(
@@ -176,14 +193,14 @@ public class RedFront extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(-90))
                                 .splineTo(new Vector2d(4,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(28,-82.5), Math.toRadians(-90))
+                                .splineTo(new Vector2d(28.5,-83.5), Math.toRadians(-90))
                                 .build());
 
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(53, -80), Math.toRadians(90))
+                                    .splineTo(new Vector2d(55, -70), Math.toRadians(90))
                                     .setReversed(true)
                                     .lineToY(-100)
                                     .build());
@@ -192,8 +209,7 @@ public class RedFront extends LinearOpMode {
                             drive.actionBuilder(drive.pose)
                                     .turn(Math.toRadians(-90))
                                     .setReversed(true)
-                                    .splineTo(new Vector2d(7, -85.5), Math.toRadians(180))
-                                    .turn(Math.toRadians(90))
+                                    .lineToX(0)
                                     .build());
                 }/*
                 if (park) {
@@ -215,22 +231,21 @@ public class RedFront extends LinearOpMode {
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, -5.5), Math.toRadians(-45))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(12.5, 0), Math.toRadians(180))
+                                .splineTo(new Vector2d(12.5, 0), Math.toRadians(-180))
                                 .build());
                 wrist.setPosition(0.5);
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(-90))
-                                .splineTo(new Vector2d(3,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(20,-72), Math.toRadians(-90))
-                                .lineToY(-82)
+                                .splineTo(new Vector2d(4,-60), Math.toRadians(-90))
+                                .splineTo(new Vector2d(22,-83.5), Math.toRadians(-90))
                                 .build());
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(53, -80), Math.toRadians(90))
+                                    .splineTo(new Vector2d(55, -70), Math.toRadians(90))
                                     .setReversed(true)
                                     .lineToY(-100)
                                     .build());
@@ -239,8 +254,7 @@ public class RedFront extends LinearOpMode {
                             drive.actionBuilder(drive.pose)
                                     .turn(Math.toRadians(-90))
                                     .setReversed(true)
-                                    .splineTo(new Vector2d(3, -85.5), Math.toRadians(180))
-                                    .turn(Math.toRadians(90))
+                                    .lineToX(0)
                                     .build());
                 }
                 /*bomb();
