@@ -141,7 +141,7 @@ public class BlueFront extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(90))
                                 .splineTo(new Vector2d(4,60), Math.toRadians(90))
-                                .splineTo(new Vector2d(21.5,83.5), Math.toRadians(90))
+                                .splineTo(new Vector2d(21.5,85), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
@@ -186,7 +186,7 @@ public class BlueFront extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(90))
                                 .splineTo(new Vector2d(4,60), Math.toRadians(90))
-                                .splineTo(new Vector2d(28.5,83.5), Math.toRadians(90))
+                                .splineTo(new Vector2d(28.5,85), Math.toRadians(90))
                                 .build());
 
                 bomb();
@@ -232,7 +232,7 @@ public class BlueFront extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(90))
                                 .splineTo(new Vector2d(8,60), Math.toRadians(90))
-                                .splineTo(new Vector2d(39,83), Math.toRadians(90))
+                                .splineTo(new Vector2d(39,85), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
