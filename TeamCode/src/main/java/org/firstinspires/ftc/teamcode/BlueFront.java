@@ -19,6 +19,7 @@ import android.graphics.Canvas;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -74,12 +75,14 @@ public class BlueFront extends LinearOpMode {
         leftArm = hardwareMap.get(DcMotor.class, "left_arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_arm");
         wrist = hardwareMap.get(Servo.class, "wrist");
-        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
         rightArm.setTargetPosition(0);
-        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(firstPipelineRevised)
@@ -100,9 +103,9 @@ public class BlueFront extends LinearOpMode {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
             telemetry.addData("Yellow? ", do_yellow);
             if (park) {
-                telemetry.addLine("Park: left");
+                telemetry.addLine("Park: middle");
             } else {
-                telemetry.addLine("Park: right");
+                telemetry.addLine("Park: corner");
             }
             telemetry.update();
             if (gamepad1.dpad_right) {
@@ -138,13 +141,24 @@ public class BlueFront extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(90))
                                 .splineTo(new Vector2d(4,60), Math.toRadians(90))
-                                .splineTo(new Vector2d(39,81.5), Math.toRadians(90))
-                                .build());
-                Actions.runBlocking(
-                        drive.actionBuilder(drive.pose)
-                                .turnTo(Math.toRadians(87))
+                                .splineTo(new Vector2d(21.5,83.5), Math.toRadians(90))
                                 .build());
                 bomb();
+                if (park) {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(52, 80), Math.toRadians(-90))
+                                    .setReversed(true)
+                                    .lineToY(100)
+                                    .build());
+                } else {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .turn(Math.toRadians(90))
+                                    .setReversed(true)
+                                    .splineTo(new Vector2d(3, 83.5), Math.toRadians(-180))
+                                    .build());
+                }
                 /*bomb();
                 if (park) {
                     Actions.runBlocking(
@@ -170,12 +184,27 @@ public class BlueFront extends LinearOpMode {
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .splineTo(new Vector2d(4,0), Math.toRadians(-90))
-                                .splineTo(new Vector2d(4,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(28,-82), Math.toRadians(-90))
+                                .splineTo(new Vector2d(4,0), Math.toRadians(90))
+                                .splineTo(new Vector2d(4,60), Math.toRadians(90))
+                                .splineTo(new Vector2d(28.5,83.5), Math.toRadians(90))
                                 .build());
 
-                bomb();/*
+                bomb();
+                if (park) {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(55, 80), Math.toRadians(-90))
+                                    .setReversed(true)
+                                    .lineToY(100)
+                                    .build());
+                } else {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .turn(Math.toRadians(90))
+                                    .setReversed(true)
+                                    .splineTo(new Vector2d(3, 83.5), Math.toRadians(-180))
+                                    .build());
+                }/*
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
@@ -201,12 +230,26 @@ public class BlueFront extends LinearOpMode {
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .splineTo(new Vector2d(4,0), Math.toRadians(-90))
-                                .splineTo(new Vector2d(3,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(24,-82), Math.toRadians(-90))
+                                .splineTo(new Vector2d(4,0), Math.toRadians(90))
+                                .splineTo(new Vector2d(8,60), Math.toRadians(90))
+                                .splineTo(new Vector2d(39,83), Math.toRadians(90))
                                 .build());
                 bomb();
-
+                if (park) {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .splineTo(new Vector2d(55, 80), Math.toRadians(-90))
+                                    .setReversed(true)
+                                    .lineToY(100)
+                                    .build());
+                } else {
+                    Actions.runBlocking(
+                            drive.actionBuilder(drive.pose)
+                                    .turn(Math.toRadians(90))
+                                    .setReversed(true)
+                                    .splineTo(new Vector2d(3, 83.5), Math.toRadians(-180))
+                                    .build());
+                }
                 /*bomb();
                 if (park) {
                     Actions.runBlocking(
@@ -228,24 +271,26 @@ public class BlueFront extends LinearOpMode {
     }
     public void bomb() {
         wrist.setPosition(1);
-        leftArm.setTargetPosition(505);
-        rightArm.setTargetPosition(505);
+        sleep(200);
+        leftArm.setPower(1);
+        rightArm.setPower(1);
+        while ((leftArm.getCurrentPosition() < 1100) && !isStopRequested()) {
+        }
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);
-        while (leftArm.getCurrentPosition() < 505) {
+        while ((leftArm.getCurrentPosition() < 2100) && !isStopRequested()) {
         }
-        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        sleep(200);
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftArm.setPower(0);
         rightArm.setPower(0);
         sleep(200);
         claw.setPosition(0.5);
         sleep(200);
-        leftArm.setTargetPosition(100);
-        rightArm.setTargetPosition(100);
-        leftArm.setPower(1);
-        rightArm.setPower(1);
-        sleep(1700);
+        leftArm.setPower(-1);
+        rightArm.setPower(-1);
+        sleep(750);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftArm.setPower(0);

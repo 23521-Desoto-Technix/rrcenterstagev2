@@ -71,6 +71,9 @@ public class ArcadeDrive extends OpMode
     public static double f = 0.1;
     private double speedmultiplier = 0.75;
     public static int target = 0;
+    public boolean locking = false;
+    public double lockpos = 0;
+    public boolean prevx = false;
 
     public double buttonPressToPower (boolean buttonPress) {
         double buttonPower = 0.0;
@@ -208,12 +211,16 @@ public class ArcadeDrive extends OpMode
             leftPower  = Math.max(Math.min((-gamepad1.left_stick_y + gamepad1.right_stick_x) / 2, 0.5), -0.5);
             rightPower = Math.max(Math.min((-gamepad1.left_stick_y - gamepad1.right_stick_x) / 2, 0.5), -0.5);
         }
-        armPower = -gamepad2.left_stick_y*0.85;
+        if (gamepad2.right_trigger > 0.5) {
+            speedmultiplier = 0.5;
+        } else {
+            speedmultiplier = 1;
+        }
+        armPower = -gamepad2.left_stick_y*0.85*speedmultiplier;
         wristUp = gamepad2.dpad_up;
         wristDown = gamepad2.dpad_down;
         clawButtonOpen = gamepad2.a;
         clawButtonClose = gamepad2.b;
-        scoreButton = gamepad2.x;
         launchButton = gamepad2.right_bumper;
 
         // Send calculated power to wheels
@@ -233,13 +240,7 @@ public class ArcadeDrive extends OpMode
         } else if (gamepad2.y) {
             wrist.setPosition(0.5);
         }
-        if (gamepad2.right_trigger > 0.5) {
-            speedmultiplier = 0.4;
-        } else {
-            speedmultiplier = 0.75;
-        }
-        telemetry.addData("right trigger", gamepad2.right_trigger);
-        telemetry.addData("speedmultiplier", speedmultiplier);
+        telemetry.addData("Arm Power", armPower);
         /*
         if (armPower == 0){
             leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -271,10 +272,23 @@ public class ArcadeDrive extends OpMode
             armPaused = false;
         }
         target += (int) (armPower * 10);
-        if (gamepad2.left_trigger > 0.5) {
-            rightArm.setPower(-0.5);
-            leftArm.setPower(-0.5);
+        if (gamepad2.x && !prevx) {
+            locking = !locking;
+            if (locking) {
+                lockpos = leftArm.getCurrentPosition();
+            }
+        }
+        prevx = gamepad2.x;
+        if (locking) {
+            rightArm.setTargetPosition((int) lockpos);
+            leftArm.setTargetPosition((int) lockpos);
+            rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftArm.setPower(1);
+            rightArm.setPower(1);
         } else {
+            rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightArm.setPower((armPower));
             leftArm.setPower((armPower));
         }

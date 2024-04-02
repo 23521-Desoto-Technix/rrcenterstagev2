@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -40,6 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Blue extends LinearOpMode {
     private FirstPipelineRevised firstPipelineRevised; //Create an object of the VisionProcessor Class
     private Servo claw = null;
+    private Servo wrist = null;
     IMU imu;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
@@ -89,12 +91,14 @@ public class Blue extends LinearOpMode {
         firstPipelineRevised = new FirstPipelineRevised();
         leftArm = hardwareMap.get(DcMotor.class, "left_arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_arm");
-        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setTargetPosition(0);
         rightArm.setTargetPosition(0);
-        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         portal = new VisionPortal.Builder()
@@ -105,12 +109,14 @@ public class Blue extends LinearOpMode {
                 .build();
         FtcDashboard.getInstance().startCameraStream(processor, 0);
         claw = hardwareMap.get(Servo.class, "claw");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         Pose2d beginPose = new Pose2d(0, 0, 0);
         TankDrive drive = new TankDrive(hardwareMap, beginPose);
         ModernRoboticsI2cRangeSensor rangeSensor;
         boolean do_yellow = true;
         boolean park = false;
         claw.setPosition(0.7);
+        wrist.setPosition(1);
         while (opModeInInit()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
             telemetry.addData("Yellow? ", do_yellow);
@@ -146,6 +152,8 @@ public class Blue extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(18, 36), Math.toRadians(90))
                                 .build());
+                telemetry.addLine("done");
+                telemetry.update();
                 bomb();
                 if (park) {
                     Actions.runBlocking(
@@ -157,9 +165,9 @@ public class Blue extends LinearOpMode {
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0, 25), Math.toRadians(-90))
+                                    .turn(Math.toRadians(90))
                                     .setReversed(true)
-                                    .lineToY(50)
+                                    .splineTo(new Vector2d(0, 33.5), Math.toRadians(-180))
                                     .build());
                 }
             } else if (selection == 2) {
@@ -167,7 +175,7 @@ public class Blue extends LinearOpMode {
                         drive.actionBuilder(beginPose)
                                 .splineTo(new Vector2d(30, 0), Math.toRadians(0))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(25, 35.5), Math.toRadians(90))
+                                .splineTo(new Vector2d(27, 35.5), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
@@ -180,9 +188,9 @@ public class Blue extends LinearOpMode {
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0, 25), Math.toRadians(-90))
+                                    .turn(Math.toRadians(90))
                                     .setReversed(true)
-                                    .lineToY(50)
+                                    .splineTo(new Vector2d(0, 33.5), Math.toRadians(-180))
                                     .build());
                 }
             } else if (selection == 3) {
@@ -191,8 +199,8 @@ public class Blue extends LinearOpMode {
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, -5.5), Math.toRadians(-45))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(28.5, 30.5), Math.toRadians(90))
-                                .splineTo(new Vector2d(28.5, 35.5), Math.toRadians(90))
+                                .splineTo(new Vector2d(34, 30.5), Math.toRadians(90))
+                                .splineTo(new Vector2d(34, 35.5), Math.toRadians(90))
                                 .build());
                 bomb();
                 if (park) {
@@ -205,9 +213,9 @@ public class Blue extends LinearOpMode {
                 } else {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(0, 25), Math.toRadians(-90))
+                                    .turn(Math.toRadians(90))
                                     .setReversed(true)
-                                    .lineToY(50)
+                                    .splineTo(new Vector2d(0, 33.5), Math.toRadians(-180))
                                     .build());
                 }
             }
@@ -216,11 +224,14 @@ public class Blue extends LinearOpMode {
 
     }
     public void bomb() {
-        leftArm.setTargetPosition(500);
-        rightArm.setTargetPosition(500);
-        leftArm.setPower(0.75);
-        rightArm.setPower(0.75);
-        while ((leftArm.getCurrentPosition() < 500) && !isStopRequested()) {
+        wrist.setPosition(1);
+        leftArm.setPower(1);
+        rightArm.setPower(1);
+        while ((leftArm.getCurrentPosition() < 1100) && !isStopRequested()) {
+        }
+        leftArm.setPower(0.5);
+        rightArm.setPower(0.5);
+        while ((leftArm.getCurrentPosition() < 2100) && !isStopRequested()) {
         }
         sleep(200);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -230,11 +241,9 @@ public class Blue extends LinearOpMode {
         sleep(200);
         claw.setPosition(0.5);
         sleep(200);
-        leftArm.setTargetPosition(100);
-        rightArm.setTargetPosition(100);
-        leftArm.setPower(1);
-        rightArm.setPower(1);
-        sleep(1200);
+        leftArm.setPower(-1);
+        rightArm.setPower(-1);
+        sleep(750);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftArm.setPower(0);
