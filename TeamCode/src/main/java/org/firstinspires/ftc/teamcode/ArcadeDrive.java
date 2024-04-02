@@ -228,7 +228,7 @@ public class ArcadeDrive extends OpMode
         rightDrive.setPower(rightPower);
         telemetryAprilTag();
         if (clawButtonOpen) {
-            claw.setPosition(0.58);
+            claw.setPosition(0.55);
         }
         if (clawButtonClose) {
             claw.setPosition(0.67);
