@@ -201,6 +201,9 @@ public class ArcadeDrive extends OpMode
         if (gamepad1.right_trigger > 0.5) {
             leftPower  = -gamepad1.left_stick_y + gamepad1.right_stick_x;
             rightPower = -gamepad1.left_stick_y - gamepad1.right_stick_x;
+        } else if (gamepad1.left_trigger > 0.5) {
+            leftPower  = Math.max(Math.min((-gamepad1.left_stick_y + gamepad1.right_stick_x) / 4, 0.25), -0.25);
+            rightPower = Math.max(Math.min((-gamepad1.left_stick_y - gamepad1.right_stick_x) / 4, 0.25), -0.25);
         } else {
             leftPower  = Math.max(Math.min((-gamepad1.left_stick_y + gamepad1.right_stick_x) / 2, 0.5), -0.5);
             rightPower = Math.max(Math.min((-gamepad1.left_stick_y - gamepad1.right_stick_x) / 2, 0.5), -0.5);

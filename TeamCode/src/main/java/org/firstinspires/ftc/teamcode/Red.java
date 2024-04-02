@@ -182,7 +182,7 @@ public class Red extends LinearOpMode {
                                 .splineTo(new Vector2d(12.5, 0), 0)
                                 .splineTo(new Vector2d(27, -5.5), Math.toRadians(-45))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(18, -34.5), Math.toRadians(-90))
+                                .splineTo(new Vector2d(16.5, -34.5), Math.toRadians(-90))
                                 .build());
                 bomb();
                 if (park) {
