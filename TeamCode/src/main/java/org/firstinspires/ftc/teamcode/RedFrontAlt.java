@@ -148,13 +148,13 @@ public class RedFrontAlt extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(-90))
                                 .splineTo(new Vector2d(8,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(39,-80), Math.toRadians(-90))
+                                .splineTo(new Vector2d(41,-80), Math.toRadians(-90))
                                 .build());
                 bomb();
                 if (park) {
                     Actions.runBlocking(
                             drive.actionBuilder(drive.pose)
-                                    .splineTo(new Vector2d(55, -70), Math.toRadians(90))
+                                    .splineTo(new Vector2d(58, -70), Math.toRadians(90))
                                     .setReversed(true)
                                     .lineToY(-100)
                                     .build());
