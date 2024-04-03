@@ -148,7 +148,7 @@ public class RedFrontAlt extends LinearOpMode {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(4,0), Math.toRadians(-90))
                                 .splineTo(new Vector2d(8,-60), Math.toRadians(-90))
-                                .splineTo(new Vector2d(39,-82), Math.toRadians(-90))
+                                .splineTo(new Vector2d(39,-80), Math.toRadians(-90))
                                 .build());
                 bomb();
                 if (park) {
