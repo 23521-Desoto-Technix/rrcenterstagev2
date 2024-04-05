@@ -95,25 +95,17 @@ public class BlueFront extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0, 0, 0);
         TankDrive drive = new TankDrive(hardwareMap, beginPose);
         ModernRoboticsI2cRangeSensor rangeSensor;
-        boolean do_yellow = true;
-        boolean park = true;
+        boolean park = false;
         claw.setPosition(0.7);
         wrist.setPosition(1);
         while (opModeInInit()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
-            telemetry.addData("Yellow? ", do_yellow);
             if (park) {
                 telemetry.addLine("Park: middle");
             } else {
                 telemetry.addLine("Park: corner");
             }
             telemetry.update();
-            if (gamepad1.dpad_right) {
-                do_yellow = true;
-            }
-            if (gamepad1.dpad_left) {
-                do_yellow = false;
-            }
             if (gamepad1.x) {
                 park = true;
             }

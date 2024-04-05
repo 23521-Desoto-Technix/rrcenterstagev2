@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.util.Size;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -11,27 +7,11 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
-import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-
 import java.lang.Math;
-
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -61,9 +41,6 @@ public class ArcadeDrive extends OpMode
     private Servo wrist = null;
     private Servo claw = null;
     private Servo launcher = null;
-    private AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
-    private double armPosition = 0;
     private PIDController controller;
     private boolean armPaused = false;
 
@@ -87,35 +64,6 @@ public class ArcadeDrive extends OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
-    public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
-        private final AtomicReference<Bitmap> lastFrame =
-                new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
-
-        @Override
-        public void init(int width, int height, CameraCalibration calibration) {
-            lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
-        }
-
-        @Override
-        public Object processFrame(Mat frame, long captureTimeNanos) {
-            Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);
-            Utils.matToBitmap(frame, b);
-            lastFrame.set(b);
-            return null;
-        }
-
-        @Override
-        public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight,
-                                float scaleBmpPxToCanvasPx, float scaleCanvasDensity,
-                                Object userContext) {
-            // do nothing
-        }
-
-        @Override
-        public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
-            continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
-        }
-    }
     @Override
     public void init() {
 
@@ -156,8 +104,6 @@ public class ArcadeDrive extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-        final CameraStreamProcessor processor = new CameraStreamProcessor();
-        initAprilTag(processor);
 
     }
 
@@ -226,7 +172,6 @@ public class ArcadeDrive extends OpMode
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
-        telemetryAprilTag();
         if (clawButtonOpen) {
             claw.setPosition(0.55);
         }
@@ -311,64 +256,5 @@ public class ArcadeDrive extends OpMode
      */
     @Override
     public void stop() {
-    }
-
-    private void telemetryAprilTag() {
-
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        telemetry.addData("# AprilTags Detected", currentDetections.size());
-
-        // Step through the list of detections and display info for each one.
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-            }
-        }   // end for() loop
-
-        // Add "key" information to telemetry
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        telemetry.addLine("RBE = Range, Bearing & Elevation");
-
-    }
-    private void initAprilTag(VisionProcessor processor) {
-
-        // Create the AprilTag processor.
-        aprilTag = new AprilTagProcessor.Builder()
-                //.setDrawAxes(false)
-                //.setDrawCubeProjection(false)
-                //.setDrawTagOutline(true)
-                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-
-                // == CAMERA CALIBRATION ==
-                // If you do not manually specify calibration parameters, the SDK will attempt
-                // to load a predefined calibration for your camera.
-                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-
-                // ... these parameters are fx, fy, cx, cy.
-
-                .build();
-
-        // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-
-        // Set the camera (webcam vs. built-in RC phone camera).
-        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        builder.addProcessor(aprilTag);
-        builder.addProcessor(processor);
-        builder.setCameraResolution(new Size(1280, 720));
-        FtcDashboard.getInstance().startCameraStream((CameraStreamSource) processor, 0);
-
-        // Build the Vision Portal, using the above settings.
-        visionPortal = builder.build();
-
     }
 }
