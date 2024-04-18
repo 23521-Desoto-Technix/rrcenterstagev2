@@ -43,6 +43,7 @@ public class Red extends LinearOpMode {
     IMU imu;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
+    private double delayCount = 0;
 
     public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
         private final AtomicReference<Bitmap> lastFrame =
@@ -103,6 +104,8 @@ public class Red extends LinearOpMode {
         ModernRoboticsI2cRangeSensor rangeSensor;
         boolean do_yellow = true;
         boolean park = false;
+        boolean lastup = false;
+        boolean lastdown = false;
         claw.setPosition(0.7);
         while (opModeInInit()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
@@ -112,6 +115,7 @@ public class Red extends LinearOpMode {
             } else {
                 telemetry.addLine("Park: corner");
             }
+            telemetry.addData(String.valueOf(delayCount), "Delay");
             telemetry.update();
             if (gamepad1.dpad_right) {
                 do_yellow = true;
@@ -125,12 +129,24 @@ public class Red extends LinearOpMode {
             if (gamepad1.b) {
                 park = false;
             }
+            if (gamepad1.dpad_up && !lastup) {
+                delayCount += 1;
+            }
+            if (gamepad1.dpad_down && !lastdown) {
+                delayCount -= 1;
+            }
+            lastup = gamepad1.dpad_up;
+            lastdown = gamepad1.dpad_down;
+            if (delayCount < 0) {
+                delayCount = 0;
+            }
         }
         waitForStart();
         if (opModeIsActive()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
             telemetry.update();
             double selection = firstPipelineRevised.getSelection();
+            sleep((long) (1000 * delayCount));
             if (selection == 1) {
                 Actions.runBlocking(
                         drive.actionBuilder(beginPose)

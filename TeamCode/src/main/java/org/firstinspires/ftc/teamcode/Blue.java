@@ -43,6 +43,7 @@ public class Blue extends LinearOpMode {
     private Servo claw = null;
     private Servo wrist = null;
     IMU imu;
+    private double delayCount = 0;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
     VisionPortal.Builder myVisionPortalBuilder;
@@ -114,6 +115,8 @@ public class Blue extends LinearOpMode {
         TankDrive drive = new TankDrive(hardwareMap, beginPose);
         ModernRoboticsI2cRangeSensor rangeSensor;
         boolean park = false;
+        boolean lastup = false;
+        boolean lastdown = false;
         claw.setPosition(0.7);
         wrist.setPosition(1);
         while (opModeInInit()) {
@@ -123,6 +126,7 @@ public class Blue extends LinearOpMode {
             } else {
                 telemetry.addLine("Park: corner");
             }
+            telemetry.addData(String.valueOf(delayCount), "Delay");
             telemetry.update();
             if (gamepad1.x) {
                 park = true;
@@ -130,12 +134,24 @@ public class Blue extends LinearOpMode {
             if (gamepad1.b) {
                 park = false;
             }
+            if (gamepad1.dpad_up && !lastup) {
+                delayCount += 1;
+            }
+            if (gamepad1.dpad_down && !lastdown) {
+                delayCount -= 1;
+            }
+            lastup = gamepad1.dpad_up;
+            lastdown = gamepad1.dpad_down;
+            if (delayCount < 0) {
+                delayCount = 0;
+            }
         }
         waitForStart();
         if (opModeIsActive()) {
             telemetry.addLine(String.valueOf(firstPipelineRevised.getSelection()));
             telemetry.update();
             double selection = firstPipelineRevised.getSelection();
+            sleep((long) (1000 * delayCount));
             if (selection == 1) {
                 Actions.runBlocking(
                         drive.actionBuilder(beginPose)
